@@ -49,19 +49,23 @@ def ShowAll(request):
 
 
 @api_view(['GET'])
-def ShowOne(request, title):
-    book = Book.objects.get(title=title)
+def ShowOne(request, id):
+    book = Book.objects.get(id=id)
     serializer = BookSerializer(book, many=False)
     return Response(serializer.data)
 
 
 @api_view(['POST'])
 def Create(request):
+    print(request.data)
     serializer = BookSerializer(data=request.data)
     print("This is serialize - ", serializer)
 
     if serializer.is_valid():
+        print("******************************")
         serializer.save()
+        
+    
 
     return Response(serializer.data)
 
@@ -149,7 +153,7 @@ def recommend_by_desc(request, genre, title):
     # Get the index corresponding to original_title
     idx = indices[title]
     
-    # Get the pairwsie similarity scores 
+    # Get the pairwsie similarity scores
     sig = list(enumerate(sg[idx]))
     
     # Sort the books
@@ -172,16 +176,17 @@ def recommend_by_desc(request, genre, title):
         res.append(serializer.data)
     
     # It reads the top 5 recommend
+    print(res)
     return Response(res)
 
 @api_view(['GET'])
 def top_rated(request):
-    books = Book.objects.all().order_by('-rating')[:10]
+    books = Book.objects.all().order_by('-rating')[:4]
     serializer = BookSerializer(books, many=True)
     return Response(serializer.data)
 
 @api_view(['GET'])
 def longest(request):
-    books = Book.objects.all().order_by('-word_count')[:10]
+    books = Book.objects.all().order_by('-word_count')[:4]
     serializer = BookSerializer(books, many=True)
     return Response(serializer.data)
