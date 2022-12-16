@@ -65,8 +65,6 @@ def Create(request):
         print("******************************")
         serializer.save()
         
-    
-
     return Response(serializer.data)
 
 
